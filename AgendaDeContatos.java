@@ -123,8 +123,4 @@ class Contato {
   return tel;
  }
 
- public void exibir() {
-  System.out.println("NOME: " + this.nome);
-  System.out.println("TELEFONE: " + this.tel);
- }
 }
