@@ -4,7 +4,7 @@ class AgendaDeContatos {
  public static void main(String[] args) {
   Scanner input = new Scanner(System.in);
 
-  Contato[] contato = new Contato[2];
+  Contato[] contato = new Contato[10];
 
   String nome = null;
   String tel = null;
