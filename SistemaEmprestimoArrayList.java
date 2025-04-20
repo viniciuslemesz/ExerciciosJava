@@ -40,7 +40,7 @@ class Main {
     emprestimo.add(new Emprestimo(data, cliente.get(i), livro.get(i)));
     
     i++;
-    }while(i<2);    
+    }while(i<3);    
     
         for(Emprestimo elemento : emprestimo){
                         elemento.Exibirdetalhes();
