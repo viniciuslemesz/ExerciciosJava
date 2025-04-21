@@ -132,7 +132,7 @@ class Holerite//só pra dar um nome de exemplo
     System.out.println("Horario Entrada: " + horarioEntrada.getHorarioEntrada());
     System.out.println("Horario Saida: " + horarioSaida.getHorarioSaida());
     System.out.printf("Total de horas trabalhadas: %.2f\n", horas);
-    System.out.printf("Horas extra: %.2f\n", horaExtra);
+    System.out.printf("Horas extra: %.0f hora extra\n", horaExtra);
 }
 
 }
