@@ -3,67 +3,111 @@
 
 import java.io.IOException;
 import java.nio.file.*;
+import java.util.List;
 import java.util.Scanner;
 
 public class ConsumoVeiculos {
 
     private static final Path CAMINHO_ARQUIVO = Paths.get("carros.txt");
-    private static Scanner scanner = new Scanner(System.in);
+    private static final Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
-        int opcao = 0;
+        int opcao;  // declarar fora do loop para poder usar no while
 
-        System.out.println("---CONSUMO DE VEICULOS---");
-        System.out.printf("Digite para selecionar:\n(1)Add Carro\n(2)Verificar Lista Consumo\n");
-        opcao = scanner.nextInt();
-        scanner.nextLine(); // limpar buffer
+        do {
+            System.out.println("--- consumo de veiculos ---");
+            System.out.println("digite para selecionar:");
+            System.out.println("(1) adicionar carro");
+            System.out.println("(2) gerar relatorio de consumo");
+            System.out.println("(3) sair");
 
-        switch (opcao) {
-            case 1:
-                // entrada dos dados
-                System.out.print("digite o fabricante do carro: ");
-                String fabricante = scanner.nextLine();
+            opcao = scanner.nextInt();
+            scanner.nextLine(); // limpar buffer
 
-                System.out.print("digite o modelo do carro: ");
-                String modelo = scanner.nextLine();
+            switch (opcao) {
+                case 1:
+                    adicionarCarro();
+                    break;
 
-                System.out.print("digite o consumo medio do carro: ");
-                double consumo_medio = scanner.nextDouble();
-                scanner.nextLine(); // limpar buffer novamente
+                case 2:
+                    gerarRelatorio();
+                    break;
 
-                Carro carro = new Carro(fabricante, modelo, consumo_medio);
+                case 3:
+                    System.out.println("saindo...");
+                    break;
 
-                verificarConsumo(carro);
-                break;
+                default:
+                    System.out.println("opcao invalida");
+                    break;
+            }
 
-            case 2:
-                // você pode implementar aqui a lógica para ler e mostrar os carros do arquivo
-                System.out.println("Opção de listar carros ainda não implementada.");
-                break;
+        } while (opcao != 3);
 
-            default:
-                System.out.println("Opção inválida!");
-                break;
-        }
-
-        scanner.close();
+        scanner.close();  // fechar scanner somente aqui, depois que sair do loop
     }
 
-    private static void verificarConsumo(Carro carro) {
-        String linha = carro.getFabricante() + ";" + carro.getModelo() + ";" + carro.getConsumo_medio();
-    
+    private static void adicionarCarro() {
+        System.out.print("digite o fabricante do carro: ");
+        String fabricante = scanner.nextLine();
+
+        System.out.print("digite o modelo do carro: ");
+        String modelo = scanner.nextLine();
+
+        System.out.print("digite o consumo medio do carro (km por litro): ");
+        double consumoMedio = scanner.nextDouble();
+        scanner.nextLine(); // limpar buffer
+
+        String linha = fabricante + ";" + modelo + ";" + consumoMedio;
+
         try {
             Files.write(CAMINHO_ARQUIVO,
                     (linha + System.lineSeparator()).getBytes(),
                     StandardOpenOption.CREATE,
                     StandardOpenOption.APPEND);
-            System.out.println("Carro adicionado: " + linha);
+
+            System.out.println("carro adicionado com sucesso: " + linha);
         } catch (IOException e) {
-            System.out.println("Erro ao adicionar carro: " + e.getMessage());
+            System.out.println("erro ao adicionar carro: " + e.getMessage());
         }
     }
-    
 
+    private static void gerarRelatorio() {
+        try {
+            System.out.print("digite o preco do combustivel (por litro): R$ ");
+            double precoCombustivel = scanner.nextDouble();
+            scanner.nextLine();
+
+            List<String> linhas = Files.readAllLines(CAMINHO_ARQUIVO);
+            StringBuilder relatorio = new StringBuilder();
+
+            for (String linha : linhas) {
+                String[] partes = linha.split(";");
+                String fabricante = partes[0];
+                String modelo = partes[1];
+                double consumo = Double.parseDouble(partes[2]);
+
+                double litros = 1000 / consumo;
+                double custo = litros * precoCombustivel;
+
+                String resultado = String.format("%s;%s;%.2f litros;R$ %.2f",
+                        fabricante, modelo, litros, custo);
+
+                relatorio.append(resultado).append(System.lineSeparator());
+            }
+
+            Path caminhoRelatorio = Paths.get("relatorio.txt");
+            Files.write(caminhoRelatorio,
+                    relatorio.toString().getBytes(),
+                    StandardOpenOption.CREATE,
+                    StandardOpenOption.TRUNCATE_EXISTING);
+
+            System.out.println("relatorio gerado com sucesso: relatorio.txt");
+
+        } catch (IOException e) {
+            System.out.println("erro ao gerar relatorio: " + e.getMessage());
+        }
+    }
 }
 
 class Carro {

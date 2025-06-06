@@ -8,3 +8,4 @@ Ford;Ka;12.3
 Renault;Logan;11.5
 Nissan;Versa;12.7
 Peugeot;208;13.1volk;gol;14.0
+ata 23;23;1234.0
